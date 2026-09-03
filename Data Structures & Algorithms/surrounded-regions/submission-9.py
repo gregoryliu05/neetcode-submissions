@@ -1,0 +1,48 @@
+class Solution:
+    def solve(self, board: List[List[str]]) -> None:
+        # edges
+        # do a bfs or dfs if we see an O
+        # if none of those O reach an edge we replace all those with x's
+        rows = len(board)
+        cols = len(board[0])
+        globalseen = set()
+        rowEdges = set([0, rows-1])
+        colEdges = set([0, cols-1])
+        dirs = [(0,1), (0,-1), (1,0), (-1,0)]
+        def bfs(r,c):
+            print(r,c)
+            seen = set()
+
+            queue = deque()
+            queue.append((r,c))
+            isSurrounded = True
+            while queue:
+                cr, cc = queue.popleft()
+                seen.add((cr,cc))
+                globalseen.add((cr,cc))
+                if cr in rowEdges or cc in colEdges:
+                    isSurrounded = False
+                for dr, dc in dirs:
+                    nr,nc = cr + dr, cc + dc 
+                    if nr >= 0 and nr < rows and nc >= 0 and nc < cols:
+                        notused = (nr,nc) not in seen
+                        isO = board[nr][nc] == "O"
+                        if (nr,nc) not in seen and board[nr][nc] == "O":
+                            queue.append((nr,nc))
+                            seen.add((nr,nc))
+                            globalseen.add((nr,nc))
+
+            return seen if isSurrounded else set()
+
+        for r in range(rows):
+            for c in range(cols):
+                if (r,c) not in globalseen and board[r][c] == "O":
+                    indices = bfs(r,c)
+                    if len(indices) > 0:
+                        for x,y in indices:
+                            board[x][y] = "X"
+                    
+                
+                    
+
+        
